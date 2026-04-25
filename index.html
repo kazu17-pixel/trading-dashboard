@@ -28,6 +28,7 @@ body {
 
 <div class="card">USDJPY: <span id="usdjpy">--</span></div>
 <div class="card">ゴールド: <span id="gold">--</span></div>
+  <div class="card">BTCUSD: <span id="btc">--</span></div>
 <div class="card">米10年利回り: <span id="yield">--</span></div>
 <div class="card">実質金利: <span id="real">--</span></div>
 <div class="card">判断: <span id="comment">--</span></div>
@@ -67,6 +68,21 @@ try {
   console.log("Gold error", e);
 }
 
+  // ===== BTCUSD =====
+let btc = "--";
+
+try {
+  let res = await fetch(`https://api.twelvedata.com/price?symbol=BTC/USD&apikey=${API_KEY}`);
+  let data = await res.json();
+
+  if (data.price) {
+    btc = parseFloat(data.price);
+  }
+
+} catch (e) {
+  console.log("BTC error", e);
+}
+
   // 米10年（簡易：固定＋微変動）
   let yield10 = 4.3 + (Math.random() - 0.5) * 0.03;
 
@@ -78,6 +94,8 @@ try {
   usdjpy === "--" ? "--" : usdjpy.toFixed(3);
  document.getElementById("gold").innerText =
   gold === "--" ? "--" : gold.toFixed(2);
+  document.getElementById("btc").innerText =
+  btc === "--" ? "--" : btc.toFixed(0);
   document.getElementById("yield").innerText = yield10.toFixed(2) + "%";
   document.getElementById("real").innerText = real.toFixed(2) + "%";
 
