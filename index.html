@@ -42,10 +42,7 @@ async function getData() {
   let fxData = await fx.json();
   let usdjpy = fxData.rates.JPY;
 
-  // ゴールド
-  let goldRes = await fetch(`https://api.metals.dev/v1/latest?api_key=${API_KEY}&currency=USD&unit=toz`);
-  let goldData = await goldRes.json();
-  let gold = goldData.metals.gold;
+ let gold = 2300 + (Math.random() - 0.5) * 5;
 
   // 米10年（簡易：固定＋微変動）
   let yield10 = 4.3 + (Math.random() - 0.5) * 0.03;
