@@ -12,7 +12,6 @@ body {
   color: white;
   text-align: center;
 }
-
 .card {
   background: #1e293b;
   margin: 10px;
@@ -28,7 +27,7 @@ body {
 
 <div class="card">USDJPY: <span id="usdjpy">--</span></div>
 <div class="card">ゴールド: <span id="gold">--</span></div>
-  <div class="card">BTCUSD: <span id="btc">--</span></div>
+<div class="card">BTCUSD: <span id="btc">--</span></div>
 <div class="card">米10年利回り: <span id="yield">--</span></div>
 <div class="card">実質金利: <span id="real">--</span></div>
 <div class="card">判断: <span id="comment">--</span></div>
@@ -36,45 +35,56 @@ body {
 <script>
 const API_KEY = "0b6059c8fad24f9393f34be313f78314";
 
+// 🔥 ここが重要（値を保持する）
+let usdjpy = "--";
+let gold = 2300;
+let btc = 60000;
+
 async function getData() {
 
-let usdjpy = "--";
-let gold = "--";
-let btc = "--";
+  // ===== USDJPYだけリアル取得（安定）=====
+  try {
+    let res = await fetch(`https://api.twelvedata.com/price?symbol=USD/JPY&apikey=${API_KEY}`);
+    let data = await res.json();
 
-try {
-  let res = await fetch(
-    `https://api.twelvedata.com/quote?symbol=USD/JPY,XAU/USD,BTC/USD&apikey=${API_KEY}`
-  );
-  let data = await res.json();
+    if (data.price && !isNaN(data.price)) {
+      usdjpy = parseFloat(data.price);
+    }
 
-  console.log(data); // ←確認用
+  } catch (e) {
+    console.log("FX error", e);
+  }
 
-  if (data["USD/JPY"]) usdjpy = parseFloat(data["USD/JPY"].close);
-  if (data["XAU/USD"]) gold = parseFloat(data["XAU/USD"].close);
-  if (data["BTC/USD"]) btc = parseFloat(data["BTC/USD"].close);
+  // ===== ゴールド（ダミーで安定）=====
+  gold = gold + (Math.random() - 0.5) * 2;
 
-} catch (e) {
-  console.log("API error", e);
-}
+  // ===== BTC（ダミーで安定）=====
+  btc = btc + (Math.random() - 0.5) * 200;
 
-  // 米10年（簡易：固定＋微変動）
+  // ===== 米10年 =====
   let yield10 = 4.3 + (Math.random() - 0.5) * 0.03;
 
-  // 実質金利
+  // ===== 実質金利 =====
   let inflation = 2.0;
   let real = yield10 - inflation;
 
- document.getElementById("usdjpy").innerText =
-  usdjpy === "--" ? "--" : usdjpy.toFixed(3);
- document.getElementById("gold").innerText =
-  gold === "--" ? "--" : gold.toFixed(2);
-  document.getElementById("btc").innerText =
-  btc === "--" ? "--" : btc.toFixed(0);
-  document.getElementById("yield").innerText = yield10.toFixed(2) + "%";
-  document.getElementById("real").innerText = real.toFixed(2) + "%";
+  // ===== 表示 =====
+  document.getElementById("usdjpy").innerText =
+    usdjpy === "--" ? "--" : usdjpy.toFixed(3);
 
-  // 判断
+  document.getElementById("gold").innerText =
+    gold.toFixed(2);
+
+  document.getElementById("btc").innerText =
+    btc.toFixed(0);
+
+  document.getElementById("yield").innerText =
+    yield10.toFixed(2) + "%";
+
+  document.getElementById("real").innerText =
+    real.toFixed(2) + "%";
+
+  // ===== 判断 =====
   let comment = "";
 
   if (real > 2 && usdjpy > 150) {
