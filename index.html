@@ -19,9 +19,6 @@ body {
   padding: 20px;
   border-radius: 12px;
 }
-
-.up { color: #22c55e; }
-.down { color: #ef4444; }
 </style>
 </head>
 
@@ -29,65 +26,55 @@ body {
 
 <h1>トレードダッシュボード</h1>
 
-<div class="card">
-  米10年利回り: <span id="yield">--</span>
-</div>
-
-<div class="card">
-  USDJPY: <span id="usdjpy">--</span>
-</div>
-
-<div class="card">
-  ゴールド: <span id="gold">--</span>
-</div>
-
-<div class="card">
-  実質金利: <span id="real">--</span>
-</div>
-
-<div class="card">
-  判断: <span id="comment">--</span>
-</div>
+<div class="card">USDJPY: <span id="usdjpy">--</span></div>
+<div class="card">ゴールド: <span id="gold">--</span></div>
+<div class="card">米10年利回り: <span id="yield">--</span></div>
+<div class="card">実質金利: <span id="real">--</span></div>
+<div class="card">判断: <span id="comment">--</span></div>
 
 <script>
+const API_KEY = "ここにAPIキー";
+
 async function getData() {
 
-  // 為替（無料API）
-  let fx = await fetch("https://api.exchangerate-api.com/v4/latest/USD")
-  let fxData = await fx.json()
-  let usdjpy = fxData.rates.JPY
+  // 為替
+  let fx = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
+  let fxData = await fx.json();
+  let usdjpy = fxData.rates.JPY;
 
-  // ゴールド（簡易：固定＋微変動）
-  let gold = 2300 + (Math.random() - 0.5) * 5
+  // ゴールド
+  let goldRes = await fetch(`https://api.metals.dev/v1/latest?api_key=${API_KEY}&currency=USD&unit=toz`);
+  let goldData = await goldRes.json();
+  let gold = goldData.metals.gold;
 
-  // 米10年利回り（擬似リアルタイム）
-  let yield10 = 4.3 + (Math.random() - 0.5) * 0.05
+  // 米10年（簡易：固定＋微変動）
+  let yield10 = 4.3 + (Math.random() - 0.5) * 0.03;
 
   // 実質金利
-  let inflation = 2.0
-  let real = yield10 - inflation
+  let inflation = 2.0;
+  let real = yield10 - inflation;
 
-  document.getElementById("yield").innerText = yield10.toFixed(2) + "%"
-  document.getElementById("usdjpy").innerText = usdjpy.toFixed(2)
-  document.getElementById("gold").innerText = gold.toFixed(0)
-  document.getElementById("real").innerText = real.toFixed(2) + "%"
+  document.getElementById("usdjpy").innerText = usdjpy.toFixed(2);
+  document.getElementById("gold").innerText = gold.toFixed(2);
+  document.getElementById("yield").innerText = yield10.toFixed(2) + "%";
+  document.getElementById("real").innerText = real.toFixed(2) + "%";
 
-  // 判断ロジック
-  let comment = ""
+  // 判断
+  let comment = "";
 
   if (real > 2 && usdjpy > 150) {
-    comment = "ドル最強・ゴールド売り圧力"
+    comment = "ドル最強・ゴールド売り圧力";
   } else if (real < 1) {
-    comment = "ゴールド買い優位"
+    comment = "ゴールド買い優位";
   } else {
-    comment = "様子見"
+    comment = "様子見";
   }
 
-  document.getElementById("comment").innerText = comment
+  document.getElementById("comment").innerText = comment;
 }
 
-getData()
-setInterval(getData, 10000)
+getData();
+setInterval(getData, 15000);
 </script>
 
 </body>
