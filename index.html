@@ -37,13 +37,18 @@ const API_KEY = "0b6059c8fad24f9393f34be313f78314";
 
 async function getData() {
 
-  // ===== USDJPY（TradingView寄せ）=====
 let usdjpy = "--";
 
 try {
   let res = await fetch(`https://api.twelvedata.com/price?symbol=USD/JPY&apikey=${API_KEY}`);
   let data = await res.json();
-  usdjpy = parseFloat(data.price);
+
+  if (data.price) {
+    usdjpy = parseFloat(data.price);
+  } else {
+    console.log("APIエラー", data);
+  }
+
 } catch (e) {
   console.log("FX error", e);
 }
