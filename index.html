@@ -39,48 +39,21 @@ const API_KEY = "0b6059c8fad24f9393f34be313f78314";
 async function getData() {
 
 let usdjpy = "--";
-
-try {
-  let res = await fetch(`https://api.twelvedata.com/price?symbol=USD/JPY&apikey=${API_KEY}`);
-  let data = await res.json();
-
-  if (data.price) {
-    usdjpy = parseFloat(data.price);
-  } else {
-    console.log("APIエラー", data);
-  }
-
-} catch (e) {
-  console.log("FX error", e);
-}
-
 let gold = "--";
-
-try {
-  let res = await fetch(`https://api.twelvedata.com/price?symbol=XAU/USD&apikey=${API_KEY}`);
-  let data = await res.json();
-
-  if (data.price) {
-    gold = parseFloat(data.price);
-  }
-
-} catch (e) {
-  console.log("Gold error", e);
-}
-
-  // ===== BTCUSD =====
 let btc = "--";
 
 try {
-  let res = await fetch(`https://api.twelvedata.com/price?symbol=BTC/USD&apikey=${API_KEY}`);
+  let res = await fetch(
+    `https://api.twelvedata.com/price?symbol=USD/JPY,XAU/USD,BTC/USD&apikey=${API_KEY}`
+  );
   let data = await res.json();
 
-  if (data.price) {
-    btc = parseFloat(data.price);
-  }
+  if (data["USD/JPY"]) usdjpy = parseFloat(data["USD/JPY"].price);
+  if (data["XAU/USD"]) gold = parseFloat(data["XAU/USD"].price);
+  if (data["BTC/USD"]) btc = parseFloat(data["BTC/USD"].price);
 
 } catch (e) {
-  console.log("BTC error", e);
+  console.log("API error", e);
 }
 
   // 米10年（簡易：固定＋微変動）
