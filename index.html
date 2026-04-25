@@ -37,10 +37,16 @@ const API_KEY = "abc123xxxxxxxx";
 
 async function getData() {
 
-  // 為替
-  let fx = await fetch("https://api.exchangerate-api.com/v4/latest/USD");
-  let fxData = await fx.json();
-  let usdjpy = fxData.rates.JPY;
+  // ===== USDJPY（TradingView寄せ）=====
+let usdjpy = "--";
+
+try {
+  let res = await fetch(`https://api.twelvedata.com/price?symbol=USD/JPY&apikey=${API_KEY}`);
+  let data = await res.json();
+  usdjpy = parseFloat(data.price);
+} catch (e) {
+  console.log("FX error", e);
+}
 
  let gold = 2300 + (Math.random() - 0.5) * 5;
 
