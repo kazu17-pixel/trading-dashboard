@@ -47,6 +47,8 @@ async function getData() {
     let res = await fetch(`https://api.twelvedata.com/price?symbol=USD/JPY&apikey=${API_KEY}`);
     let data = await res.json();
 
+    console.log(data);
+
     if (data.price && !isNaN(data.price)) {
       usdjpy = parseFloat(data.price);
     }
