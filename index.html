@@ -44,13 +44,15 @@ let btc = "--";
 
 try {
   let res = await fetch(
-    `https://api.twelvedata.com/price?symbol=USD/JPY,XAU/USD,BTC/USD&apikey=${API_KEY}`
+    `https://api.twelvedata.com/quote?symbol=USD/JPY,XAU/USD,BTC/USD&apikey=${API_KEY}`
   );
   let data = await res.json();
 
-  if (data["USD/JPY"]) usdjpy = parseFloat(data["USD/JPY"].price);
-  if (data["XAU/USD"]) gold = parseFloat(data["XAU/USD"].price);
-  if (data["BTC/USD"]) btc = parseFloat(data["BTC/USD"].price);
+  console.log(data); // ←確認用
+
+  if (data["USD/JPY"]) usdjpy = parseFloat(data["USD/JPY"].close);
+  if (data["XAU/USD"]) gold = parseFloat(data["XAU/USD"].close);
+  if (data["BTC/USD"]) btc = parseFloat(data["BTC/USD"].close);
 
 } catch (e) {
   console.log("API error", e);
