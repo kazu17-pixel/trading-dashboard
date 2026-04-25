@@ -52,35 +52,42 @@ body {
 <script>
 async function getData() {
 
-  // 仮データ（後でAPIに変える）
-  let yield10 = 4.3 + (Math.random() - 0.5) * 0.1;
-  let usdjpy = 155 + (Math.random() - 0.5) * 1;
-  let gold = 2300 + (Math.random() - 0.5) * 10;
+  // 為替（無料API）
+  let fx = await fetch("https://api.exchangerate-api.com/v4/latest/USD")
+  let fxData = await fx.json()
+  let usdjpy = fxData.rates.JPY
 
-  let inflation = 2.0; // 固定
-  let real = yield10 - inflation;
+  // ゴールド（簡易：固定＋微変動）
+  let gold = 2300 + (Math.random() - 0.5) * 5
 
-  document.getElementById("yield").innerText = yield10.toFixed(2) + "%";
-  document.getElementById("usdjpy").innerText = usdjpy.toFixed(2);
-  document.getElementById("gold").innerText = gold.toFixed(0);
-  document.getElementById("real").innerText = real.toFixed(2) + "%";
+  // 米10年利回り（擬似リアルタイム）
+  let yield10 = 4.3 + (Math.random() - 0.5) * 0.05
+
+  // 実質金利
+  let inflation = 2.0
+  let real = yield10 - inflation
+
+  document.getElementById("yield").innerText = yield10.toFixed(2) + "%"
+  document.getElementById("usdjpy").innerText = usdjpy.toFixed(2)
+  document.getElementById("gold").innerText = gold.toFixed(0)
+  document.getElementById("real").innerText = real.toFixed(2) + "%"
 
   // 判断ロジック
-  let comment = "";
+  let comment = ""
 
   if (real > 2 && usdjpy > 150) {
-    comment = "ドル最強・ゴールド売り圧力";
+    comment = "ドル最強・ゴールド売り圧力"
   } else if (real < 1) {
-    comment = "ゴールド買い優位";
+    comment = "ゴールド買い優位"
   } else {
-    comment = "様子見";
+    comment = "様子見"
   }
 
-  document.getElementById("comment").innerText = comment;
+  document.getElementById("comment").innerText = comment
 }
 
-getData();
-setInterval(getData, 5000);
+getData()
+setInterval(getData, 10000)
 </script>
 
 </body>
